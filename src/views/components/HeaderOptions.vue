@@ -110,13 +110,16 @@ async function save(hasCover: boolean = false) {
   // }
   controlStore.setShowMoveable(false) // 清理掉上一次的选择框
   // console.log(proxy?.dPage, proxy?.dWidgets)
-  const { id, tempid } = route.query
+  const { id, tempid, page_type } = route.query
   const cover = hasCover ? await draw() : undefined
   // const widgets = dWidgets.value // reviseData()
   const data = widgetStore.dLayouts
   console.log(data);
+  data.map(item => {
+    item.global.page_type =  page_type || dPage.value.page_type; // 接口不是我们的，公共参数没有接收这个参数，只能先放在这里
+  })
   console.log(dPage)
-  const { id: newId, stat, msg } = await api.home.saveWorks({ cover, id: (id as string), title: state.title || '未命名设计', data: JSON.stringify(data), temp_id: (tempid as string), width: dPage.value.width, height: dPage.value.height, autoScroll: dPage.value.autoScroll, scrollSpeed: dPage.value.scrollSpeed })
+  const { id: newId, stat, msg } = await api.home.saveWorks({ cover, id: (id as string), title: state.title || '未命名设计', data: JSON.stringify(data), temp_id: (tempid as string), width: dPage.value.width, height: dPage.value.height, autoScroll: dPage.value.autoScroll, scrollSpeed: dPage.value.scrollSpeed, page_type: page_type || 'turnPage'  })
   stat !== 0 ? useNotification('保存成功', '可在"我的作品"中查看') : useNotification('保存失败', msg, { type: 'error' })
   !id && router.push({ path: '/home', query: { id: newId }, replace: true })
   controlStore.setShowMoveable(true)
@@ -226,6 +229,9 @@ async function load(cb: () => void) {
     dPage.value.autoScroll = true; // 新增时设置默认滚动
     dPage.value.scrollSpeed = page_type === 'longPage' ? 10 : 1000; // 新增时设置默认滚动时间（毫秒）
     dPage.value.scrolldelay = 1000; // 新增时设置默认停止滚动后继续的时间（毫秒）
+    dPage.value.page_type = content[0].global.page_type; // 暂时放着，后续抽到公共那里去
+    console.log(dPage.value.page_type);
+    
   }
   if (!id && !tempId) {
     initBoard()
@@ -238,6 +244,12 @@ async function load(cb: () => void) {
   state.stateBollean = !!_state
   state.title = title
   controlStore.setShowMoveable(false) // 清理掉上一次的选择框
+  console.log('--------------------------------');
+  
+  console.log(dPage.value);
+  console.log(data[0]);
+  
+  dPage.value.page_type = data[0].global.page_type; // 暂时放着，后续抽到公共那里去
   if (type == 1) {
     // 加载文字组合组件
     dPage.value.width = width

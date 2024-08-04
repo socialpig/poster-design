@@ -19,5 +19,6 @@ export const wGroupSetting = {
     minHeight: 0,
     dir: 'none',
   },
+  transition: {},
 }
 

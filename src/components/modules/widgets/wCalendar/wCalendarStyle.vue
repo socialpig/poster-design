@@ -2,7 +2,7 @@
   <div id="w-calendar-style">
     <el-collapse v-model="state.activeNames">
       <el-collapse-item title="位置尺寸" name="1">
-        <div class="line-layout">
+        <div class="line-layout" style="flex-wrap: wrap">
           <number-input v-model="state.innerElement.left" label="X" @finish="(value) => finish('left', value)" />
           <number-input v-model="state.innerElement.top" label="Y" @finish="(value) => finish('top', value)" />
           <number-input v-model="state.innerElement.width" style="margin-top: 0.5rem" label="宽" :editable="true" @finish="(value) => finish('width', value)" />
@@ -21,10 +21,16 @@
           value-format="YYYY-MM-DD"
         />
       </div>
+      <div>
+        <div class="line-layout style-item">
+          <div>背景</div>
+          <color-select v-model="state.innerElement.bgColor" width="220px" label="" @finish="(value) => finish(`bgColor`, value)" />
+        </div>
+      </div>
       <div class="line-layout style-item">
         <div>图标</div>
         <color-select v-model="state.innerElement.iconColor" width="30px" label="" @finish="(value) => finish(`${key}.color`, value)" />
-        <el-select v-model="state.innerElement.icon" placeholder="Select" style="width: 200px">
+        <el-select v-model="state.innerElement.icon" placeholder="Select" style="width: 130px">
           <el-option
             v-for="item in state.iconOptions"
             :key="item.value"
@@ -32,9 +38,9 @@
             :value="item.value"
           />
         </el-select>
+        <value-select v-model="state.innerElement.iconSize" label="" suffix="px" :data="state.fontSizeList" inputWidth="60px"  @finish="(value) => finish(`iconSize`, value)" />
       </div>
       <div v-for="key in ['week', 'date', 'lunarDate']">
-        <!-- <el-divider content-position="left">{{key === 'week' ? '星期' : key === 'date' ? '日期' : '农历' }}设置</el-divider> -->
         <div class="line-layout style-item">
           <div>{{key === 'week' ? '星期' : key === 'date' ? '日期' : '农历'}}</div>
           <color-select v-model="state.innerElement[key].color" width="30px" label="" @finish="(value) => finish(`${key}.color`, value)" />
@@ -43,7 +49,6 @@
         </div>
       </div>
       <div>
-        <!-- <el-divider content-position="left">边框设置</el-divider> -->
         <div class="line-layout style-item">
           <div>边框</div>
           <color-select v-model="state.innerElement.border.color" width="30px" label="" @finish="(value) => finish(`border.color`, value)" />
@@ -150,6 +155,8 @@ function change() {
 }
 
 function changeValue() {
+  console.log(1111);
+  
   if (state.tag) {
     state.tag = false
     return
@@ -157,6 +164,7 @@ function changeValue() {
   if (dMoving.value) {
     return
   }
+  console.log('dActiveElement-rili', dActiveElement);
   // TODO 修改数值
   for (let key in state.innerElement) {
     const itemKey = key as keyof TwTextData
@@ -200,6 +208,8 @@ function loadFonts() {
     const item = { id, oid, value, url, alias, preview }
     lang === 'zh' ? fontLists['中文'].unshift(item) : fontLists['英文'].unshift(item)
   }
+  // fontLists['中文'].unshift({alias: '微软雅黑', id: -1, value: '', url: '', preview: '微软雅黑'})
+  // fontLists['英文'].unshift({alias: 'normal', id: -1, value: '', url: '',preview: 'normal'})
   fontLists['当前页面'] = usePageFontsFilter()
   console.log(fontLists);
   

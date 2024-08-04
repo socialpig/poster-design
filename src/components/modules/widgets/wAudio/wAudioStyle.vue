@@ -64,6 +64,8 @@ const audioList = reactive([
   {src: 'https://hxdata.huanxiinv.com/system_assets_music/tTeTey4uNAdG90EY.mp3?v=1705919252', name: '千与千寻主题曲Always With Me钢琴版', type: '欢快'},
   {src: 'https://hxdata.huanxiinv.com/system_assets_music/DQF83hnjdrmFEaGW.mp3?v=1705919247', name: '玛吉阿米', type: '欢快'},
   {src: 'https://hxdata.huanxiinv.com/system_assets_music/ZWKwxXaHqBCCaBuy.mp3?v=1705919256', name: '震撼大气开场音乐', type: '欢快'},
+  {src: 'https://hxdata.huanxiinv.com/system_assets_music/A0DWnhUQhouoHB8t.mp3?v=1705919549', name: '红日-李克勤', type: '欢快'},
+  
 ])
 
 

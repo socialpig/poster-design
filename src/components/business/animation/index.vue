@@ -81,7 +81,7 @@
       animate: value,
       animateName: label,
       duration: 10, 
-      delay: 0.5, 
+      delay: 1, 
       speed: 'fast', 
       isRepeat: true, 
       repeatTime: 1, // 循环次数，1表示一次之后就停止

@@ -83,6 +83,11 @@ export const animationOptions = [
         label: '左右摆动',
         isAnimating: false,
       value: 'wobble'
+      },
+      {
+        label: '旋转',
+        isAnimating: false,
+        value: 'rotate'
       }
     ]
   },

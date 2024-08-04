@@ -59,4 +59,5 @@ export const wQrcodeSetting: TWQrcodeSetting = {
     minHeight: 10,
     dir: 'all',
   },
+  transition: {},
 }

@@ -1,18 +1,20 @@
 <template>
-  <div id="page-design-index" ref="pageDesignIndex">
+  <div id="page-design-index h5-page-design-index" ref="pageDesignIndex">
     <div class="page-design-index-wrap" id="preview">
-      <design-board :isPreview="true" class="page-design-wrap fixed-canvas" pageDesignCanvasId="page-design-canvas"></design-board>
+      <design-board :isH5="true" v-if='!isH5Edit' class="page-design-wrap fixed-canvas" pageDesignCanvasId="page-design-canvas"></design-board>
+      <h5-edit :isH5="true" v-else class="page-design-wrap fixed-canvas" pageDesignCanvasId="page-design-canvas"></h5-edit>
     </div>
     <!-- 缩放控制 -->
-    <zoom-control :isPreview="true"/>
-    <Moveable></Moveable>    
+    <zoom-control :isH5="true"/>
+    <!-- 旋转缩放组件 -->
+    <Moveable />  
     <!-- 右键菜单 -->
     <right-click-menu />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { StyleValue, onMounted, reactive, nextTick } from 'vue'
+import { StyleValue, onMounted, reactive, nextTick, ref } from 'vue'
 import api from '@/api'
 import Preload from '@/utils/plugins/preload'
 import FontFaceObserver from 'fontfaceobserver'
@@ -20,6 +22,7 @@ import { fontWithDraw, font2style } from '@/utils/widgets/loadFontRule'
 import Moveable from '@/components/business/moveable/Moveable.vue'
 import RightClickMenu from '@/components/business/right-click-menu/RcMenu.vue'
 import designBoard from '@/components/modules/layout/designBoard/previewBoard.vue'
+import h5Edit from '@/components/modules/layout/designBoard/h5Edit.vue'
 import zoomControl from '@/components/modules/layout/zoomControl/index.vue'
 import { useRoute } from 'vue-router'
 // import { wGroupSetting } from '@/components/modules/widgets/wGroup/groupSetting'
@@ -40,11 +43,8 @@ const pageStore = useCanvasStore()
 // const groupStore = useGroupStore()
 const widgetStore = useWidgetStore()
 const { dPage } = storeToRefs(pageStore)
-
+let isH5Edit = ref(false)
 onMounted(() => {
-  // groupStore.initGroupJson(JSON.stringify(wGroupSetting))
-  // store.dispatch('initGroupJson', JSON.stringify(wGroupSetting))
-  // initGroupJson(JSON.stringify(wGroup.setting))
   nextTick(() => {
     load()
   })
@@ -53,7 +53,10 @@ onMounted(() => {
 async function load() {
   let backgroundImage = ''
   let loadFlag = false
-  const { id, tempid, tempType: type = 0, index = 0  }: any = route.query 
+  const { id, tempid, tempType: type = 0, index = 0, edit  }: any = route.query 
+  isH5Edit.value = edit;
+  console.log('isH5Edit', isH5Edit.value);
+  
   if (id || tempid) {
     const postData = {
       id: Number(id || tempid),
@@ -76,6 +79,7 @@ async function load() {
       dPage.value.height = height
       dPage.value.backgroundColor = '#ffffff00'
       widgetStore.addGroup(content)
+      dPage.value.page_type = content[0].global.page_type; // 暂时放着，后续抽到公共那里去
     } else {
       pageStore.setDPage(content.page)
       // 移除背景图，作为独立事件
@@ -171,6 +175,10 @@ async function load() {
     top: 0 !important;
     left: 0 !important;
   }
+}
+.h5-page-design-index{
+  min-height: unset;
+  min-width: unset;
 }
 </style>
 

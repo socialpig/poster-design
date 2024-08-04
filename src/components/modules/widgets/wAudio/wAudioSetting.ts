@@ -70,5 +70,6 @@ export const wAudioSetting: TAudioSetting = {
     ratio: 0,
     left: 0,
   },
+  transition: {},
 }
 

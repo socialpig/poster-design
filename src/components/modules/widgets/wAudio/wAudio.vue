@@ -5,13 +5,14 @@
     ref="widgetRef"
     :class="['w-audio', { 'layer-lock': params.lock, 'animate': params.play, 'stop': !params.play }]"
     :style="{
-      position: state.position,
+      position: 'fixed',
       right: params.right + 'px',
       top: params.top + 'px',
       width: params.width + 'px',
       height: params.height + 'px',
       opacity: params.opacity,
       color: params.color,
+      zIndex: 1,
     }"
   >
     <svg v-if="params.isSet" @click="toggleAudio(true)" t="1718808824604" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="23294" :width="params.width" :height="params.height"><path d="M512 117.333333c217.962667 0 394.666667 176.704 394.666667 394.666667S729.962667 906.666667 512 906.666667 117.333333 729.962667 117.333333 512 294.037333 117.333333 512 117.333333z m0 64C329.386667 181.333333 181.333333 329.386667 181.333333 512c0 182.613333 148.053333 330.666667 330.666667 330.666667 182.613333 0 330.666667-148.053333 330.666667-330.666667 0-133.098667-78.634667-247.829333-192-300.266667v307.370667A138.965333 138.965333 0 0 1 512 650.666667a138.666667 138.666667 0 1 1 74.688-255.509334V189.802667A331.690667 331.690667 0 0 0 512 181.333333z m0 256a74.666667 74.666667 0 1 0 0 149.333334 74.666667 74.666667 0 0 0 0-149.333334z" :fill="params.color" p-id="23295"></path></svg> 

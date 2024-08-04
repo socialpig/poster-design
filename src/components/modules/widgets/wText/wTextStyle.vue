@@ -26,12 +26,15 @@
       <div class="style-item slide-wrap">
         <number-slider v-model="state.innerElement.letterSpacing" style="font-size: 14px" label="字距" labelWidth="40px" :step="0.05" :minValue="-state.innerElement.fontSize" :maxValue="state.innerElement.fontSize * 2" @finish="(value) => finish('letterSpacing', value)" />
         <number-slider v-model="state.innerElement.lineHeight" style="font-size: 14px" label="行距" labelWidth="40px" :step="0.05" :minValue="0" :maxValue="2.5" @finish="(value) => finish('lineHeight', value)" />
+        <number-slider v-model="state.innerElement.borderRadius" style="font-size: 14px" label="圆角" labelWidth="40px" :step="1" :minValue="0" :maxValue="100" @finish="(value) => finish('borderRadius', value)" />
+          <number-slider v-model="state.innerElement.borderWidth" style="font-size: 14px" label="边框" labelWidth="40px" :step="1" :minValue="0" :maxValue="30" @finish="(value) => finish('borderWidth', value)" />
       </div>
       <!-- </el-collapse-item> -->
 
       <div style="flex-wrap: nowrap" class="line-layout style-item">
         <color-select v-model="state.innerElement.color" label="颜色" @finish="(value) => finish('color', value)" />
-        <!-- <color-select v-model="innerElement.backgroundColor" label="背景颜色" @finish="(value) => finish('backgroundColor', value)" /> -->
+        <color-select v-model="state.innerElement.backgroundColor" label="背景颜色" @finish="(value) => finish('backgroundColor', value)" />
+        <color-select v-model="state.innerElement.borderColor" label="边框颜色" @finish="(value) => finish('borderColor', value)" />
       </div>
       <div class="line-layout style-item">
         <effect-wrap v-model="state.innerElement.textEffects" :data="state.innerElement" :degree="state.innerElement.degree" @select="selectTextEffect" />

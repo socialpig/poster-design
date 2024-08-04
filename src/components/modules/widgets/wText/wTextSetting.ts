@@ -10,6 +10,11 @@ export type TwTextData = {
   transform: string
   lineHeight: number
   letterSpacing: number
+  borderRadius: Number
+  
+  borderColor: Number // 边框颜色
+  borderWidth: Number // 边框大小
+  borderStyle: string // 先默认
   fontSize: number
   zoom: number
   fontClass: {
@@ -63,6 +68,7 @@ export type TwTextData = {
   width?: number
   height?: number
   degree?: number
+  transition: Object,
 }
 
 export const wTextSetting: TwTextData = {
@@ -75,6 +81,10 @@ export const wTextSetting: TwTextData = {
   transform: '',
   lineHeight: 1.5,
   letterSpacing: 0,
+  borderRadius: 0, // 边框角度
+  borderColor: 0, // 边框颜色
+  borderWidth: 0, // 边框大小
+  borderStyle: 'solid', // 先默认
   fontSize: 24,
   zoom: 1,
   fontClass: {
@@ -101,4 +111,5 @@ export const wTextSetting: TwTextData = {
     minHeight: 0,
     dir: 'horizontal',
   },
+  transition: {},
 }

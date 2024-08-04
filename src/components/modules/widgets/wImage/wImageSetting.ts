@@ -63,7 +63,8 @@ const setting: TImageSetting = {
   sliceData: {
     ratio: 0,
     left: 0,
-  }
+  },
+  transition: {},
 }
 
 export default setting

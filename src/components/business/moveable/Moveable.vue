@@ -32,6 +32,8 @@ let _target: string | null = null
 watch(
   () => dActiveElement.value,
   async (val) => {
+    console.log('dActiveElement-moveable---', val);
+    
     setTimeout(async () => {
       await nextTick()
       checkMouseEvent()
@@ -47,6 +49,8 @@ watch(
       _target = `[id="${val.uuid}"]`
       moveable.rotatable = true // 选择时会取消旋转
       // 方向点位设置
+      console.log('val.type', val.type);
+      
       // this.moveable.renderDirections = val.type === 'w-text' ? ['e', 'se'] : 'w-image' ? ['nw', 'n', 'ne', 'w', 'e', 'sw', 's', 'se'] : ['nw', 'ne', 'sw', 'se']
       switch (val.type) {
         case 'w-text':
@@ -67,6 +71,8 @@ watch(
       }
       // // Set Move Auto
       moveable.setState({ target: _target }, () => {
+        console.log('选中了');
+        
         // 当出现mouseevent时进行即刻选中
         checkMouseEvent()
       })
@@ -94,6 +100,10 @@ watch(
 watch(
   () => showMoveable.value,
   (val) => {
+    console.log('showMoveable', val);
+    console.log('moveable', moveable);
+    
+    
     if (!moveable) return
     if (val) {
         moveable.target = _target
@@ -236,10 +246,12 @@ let resetRatio: number = 0
 let resizeTempData: { width: number, height: number } | null = null
 
 onMounted(() => {
+  console.log(6666);
+  
   let holdGroupPosition: Record<string, any> | null = null
   const moveableOptions: TMoveableOptions = {
     target: document.querySelector(`[id="empty"]`),
-    // container: document.querySelector('#page-design'),
+    // target: document.querySelector('#page-design'),
     zoom: 0.8,
     draggable: true,
     clippable: false, // 裁剪
@@ -354,9 +366,18 @@ onMounted(() => {
       }, 100)
     }
   })
-  // .on('keyUp', (e) => {
-  //   moveable.updateRect()
-  // })
+  .on('keyUp', (e) => {
+    console.log(e);
+    console.log('keyUp ---- ');
+    
+    moveable.updateRect()
+  })
+  .on('keyDown', (e) => {
+    console.log(e);
+    console.log('keydown ---- ');
+    
+    moveable.updateRect()
+  })
   .on('rotate', ({ target, beforeDist, dist, transform }: any) => {
     // console.log('onRotate', Number(this.dActiveElement.rotate) + Number(beforeDist + dist))
     // target.style.transform = transform

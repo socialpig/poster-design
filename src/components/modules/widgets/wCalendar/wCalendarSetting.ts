@@ -2,22 +2,23 @@ export const wCalendarSetting: TWCalendarSetting = {
   name: '日历',
   type: 'w-calendar',
   uuid: -1,
-  width: 700,
-  height: 830,
-  left: 0,
-  top: 0,
+  width: 430,
+  height: 480,
+  left: 30,
+  top: 70,
   zoom: 1,
   transform: '',
   radius: 0,
   opacity: 1,
   parent: '-1',
-  value: '2024-05-09', // 日期
+  value: '2024-07-09', // 日期
   icon: 'double', // 图标
   iconColor: '#d81e06', // 图标颜色
+  iconSize: 50, // 图标大小
   transition: '',
   date: {
     color: '#000', // 日期颜色
-    fontSize: '36', // 日期字体大小
+    fontSize: '26', // 日期字体大小
     fontClass: { // 字体样式
       alias: '站酷黄油体',
       id: 543,
@@ -27,7 +28,7 @@ export const wCalendarSetting: TWCalendarSetting = {
   },
   week: {
     color: '#851e1e', // 星期颜色
-    fontSize: 36, // 星期字体大小
+    fontSize: 26, // 星期字体大小
     fontClass: { // 字体样式
       alias: "阿里妈妈数黑体",
       id: 543,
@@ -37,7 +38,7 @@ export const wCalendarSetting: TWCalendarSetting = {
   },
   lunarDate: {
     color: '#aaaaaa', // 农历颜色
-    fontSize: '26', // 农历字体大小
+    fontSize: '20', // 农历字体大小
     fontClass: { // 字体样式
       alias: '站酷快乐体',
       id: 543,
@@ -46,7 +47,7 @@ export const wCalendarSetting: TWCalendarSetting = {
     },
   },
   chooseColor: '', // 选中的颜色
-  bgColor: 'blue', // 背景颜色
+  bgColor: '', // 背景颜色
   border: {
     color: 'black', // 边框颜色
     size: '0', // 边框大小，px

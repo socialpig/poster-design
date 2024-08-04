@@ -1,9 +1,6 @@
 <!--
- * @Author: ShawnPhang
  * @Date: 2024-04-10 23:02:46
- * @Description: 主画布
- * @LastEditors: ShawnPhang <https://m.palxp.cn>
- * @LastEditTime: 2024-04-16 11:34:08
+ * @Description: 预览页面
 -->
 <template>
   <div id="main" class="main-preview" :class="{'h5-preview': isH5 }" v-show="isShow"  
@@ -23,8 +20,11 @@
           opacity: 1 - (dZoom < 100 ? dPage.tag : 0),
         }"
       >
+      <!-- 音频抽离到公共模块 -->
+      <component is="w-audio" :style="{scale:  dZoom / 100,right: '-10px', top: '-10'}" v-for="layer in dLayouts[0].layers"  :id="layer.uuid" :key="layer.uuid" :class="[layer, { 'layer-hover': layer.uuid === dHoverUuid || dActiveElement?.parent === layer.uuid, 'layer-no-hover': dActiveElement?.uuid === layer.uuid }, animationConfig(layer)]" :data-title="layer.type" :params="layer" :parent="dPage" :data-type="layer.type" :data-uuid="layer.uuid">
+      </component>
         <slot />
-        <watermark :customStyle="{ height: (dPage.height * dZoom) / 100 + 'px',font: {fontSize: 0} }">
+        <watermark :customStyle="{ height: dPage.page_type === 'turnPage' ? '100%' : (dPage.height * dZoom) / 100 + 'px',font: {fontSize: 0} }">
           <div
             :id="pageDesignCanvasId"
             class="design-canvas"
@@ -32,7 +32,7 @@
             :data-uuid="dPage.uuid"
             :style="{
               width: dPage.width + 'px',
-              height: dPage.height + 'px',
+              height: dPage.page_type === 'turnPage' ? 10000 / dZoom + '%' : dPage.height + 'px',
               scale:  dZoom / 100,
               transformOrigin: (dZoom >= 100 ? 'center' : 'left') + ' top',
               backgroundColor: dPage.backgroundGradient ? undefined : dPage.backgroundColor,
@@ -45,16 +45,20 @@
             @mousedown="mousedown($event)"
             @mousemove="mousemove($event)"
             @mouseup="mouseup($event)"
+            @touchstart="touchstart($event)"
+            @touchend="touchend($event)"
           >
           
           <!--  -->
             <!-- <div class="pageItem" v-for="(item, i) in dLayouts" :key="i">
               <component :is="layer.type" v-for="layer in item.layers" :id="layer.uuid" :key="layer.uuid" :class="[layer, { 'layer-hover': layer.uuid === dHoverUuid || dActiveElement?.parent === layer.uuid, 'layer-no-hover': dActiveElement?.uuid === layer.uuid }, animationConfig(layer)]" :data-title="layer.type" :params="layer" :parent="dPage" :data-type="layer.type" :data-uuid="layer.uuid"> -->
-              <component :is="layer.type" v-for="layer in dLayouts[page_index].layers" :id="layer.uuid" :key="layer.uuid" :class="[layer, { 'layer-hover': layer.uuid === dHoverUuid || dActiveElement?.parent === layer.uuid, 'layer-no-hover': dActiveElement?.uuid === layer.uuid }, animationConfig(layer)]" :data-title="layer.type" :params="layer" :parent="dPage" :data-type="layer.type" :data-uuid="layer.uuid">
+            <div v-for="layer in dLayouts[page_index].layers" >
+              <component v-if="layer.type !== 'w-audio'" :is="layer.type" :id="layer.uuid" :key="layer.uuid" :class="[layer, { 'layer-hover': layer.uuid === dHoverUuid || dActiveElement?.parent === layer.uuid, 'layer-no-hover': dActiveElement?.uuid === layer.uuid }, animationConfig(layer)]" :data-title="layer.type" :params="layer" :parent="dPage" :data-type="layer.type" :data-uuid="layer.uuid">
                 <template v-if="layer.isContainer">
                   <component :is="widget.type" v-for="widget in getChilds(layer.uuid)" :key="widget.uuid" child :class="[layer, { 'layer-no-hover': dActiveElement?.uuid !== widget.parent && dActiveElement?.parent !== widget.parent }]" :data-title="widget.type" :params="widget" :parent="layer" :data-type="widget.type" :data-uuid="widget.uuid" />
                 </template>
               </component>
+            </div>
             <!-- </div> -->
           </div>
         </watermark>
@@ -99,13 +103,12 @@ const canvasStore = useCanvasStore()
 
 const { pageDesignCanvasId, isH5 } = defineProps<TProps>()
 
-
 const { dPage } = storeToRefs(useCanvasStore())
 let { dZoom, dPresetPadding, dPaddingTop, dScreen } = storeToRefs(canvasStore)
 const { dDraging, showRotatable, dAltDown, dSpaceDown } = storeToRefs(controlStore)
 const { dWidgets, dActiveElement, dSelectWidgets, dHoverUuid,dLayouts } = storeToRefs(widgetStore)
 // 控制滚动相关的hooks
-const {autoScroll, page_index, page_type, fnAutoScroll, fnAutoTurnPage, mousedown, mousemove, mouseup} = useScroll(dPage, dLayouts)
+const {autoScroll, page_index, page_type, fnAutoScroll, fnAutoTurnPage, mousedown, mousemove, mouseup, touchstart, touchend} = useScroll(dPage, dLayouts)
 let isShow = ref(false)
 const svg = `
         <path class="path" d="
@@ -124,6 +127,11 @@ setTimeout(() => {
   console.log('TinnerWidth--' + document.body.clientWidth);// 添加事件监听，以响应屏幕尺寸变化
   
   if(dPage.value.page_type === 'longPage') {
+      console.log('old-dZoom--'  + dZoom.value)
+      dZoom.value = isH5 ? document.body.clientWidth / dPage.value.width * 100  : dZoom.value * 10
+      // dZoom.value = dZoom.value * 8.8
+      console.log('dZoom--'  + dZoom.value)
+  }else if(dPage.value.page_type === 'turnPage') {
       console.log('old-dZoom--'  + dZoom.value)
       dZoom.value = isH5 ? document.body.clientWidth / dPage.value.width * 100  : dZoom.value * 10
       // dZoom.value = dZoom.value * 8.8
@@ -165,7 +173,7 @@ function animationConfig(layer) {
     res?.delay ? 'animate__delay-'+ res.delay +'s' : '', 
     res?.speed ? 'animate__' + res.speed : '',
     // 判断是否预览，预览只循环展示一次，不是预览的话判断是否设置了循环，设置了的话判断循环次数并添加对应次数，否则无限循环
-    res?.isPreview ? 'animate__repeat-1' : (res?.isRepeat ? (res.repeatTime ? 'animate__repeat-' + res.repeatTime : 'animate__infinite') : ''),
+    !res?.isRepeat ? 'animate__repeat-1' : (res?.isRepeat ? (res.repeatTime ? 'animate__repeat-' + res.repeatTime : 'animate__infinite') : ''),
   ]
  return list.join(' ');
 }

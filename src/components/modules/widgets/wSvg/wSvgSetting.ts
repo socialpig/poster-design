@@ -51,4 +51,5 @@ export const wSvgSetting = {
     minWidth: 10,
     minHeight: 10,
   },
+  transition: {},
 }
