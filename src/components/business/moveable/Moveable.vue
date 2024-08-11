@@ -164,6 +164,8 @@ watch(
 watch(
   () => dSelectWidgets.value,
   (items) => {
+    console.log('dSelectWidgets', items);
+    
     if (!moveable) return
     const alt = dAltDown.value
     // if (items.length > 1) {

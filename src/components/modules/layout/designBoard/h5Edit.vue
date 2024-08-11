@@ -4,101 +4,125 @@
  * @Description: 预览页面
 -->
 <template>
-  <div>
-    <el-button size="small">返回</el-button>
-  </div>
-  <div id="main" class="main-preview" :class="{'h5-preview': isH5 }" v-show="isShow"  
-      v-loading="loading"
-      element-loading-text="Loading..."
-      :element-loading-spinner="svg"
-      element-loading-svg-view-box="-10, -10, 50, 50"
-      element-loading-background="rgba(255, 255, 255, 1)"
-      style="scale: 0.8"
-      >
-      <!--  -->
-    <div id="page-design" ref="page_design" :style="{minWidth: isH5 ? '100%' : (dPage.width * dZoom) / 100 + dPresetPadding * 2 + 'px' }">
-      <div
-        id="out-page"
-        class="out-page"
-        :style="{
-          width: isH5 ? '100%' : (dPage.width * dZoom) / 100 + dPresetPadding * 2 + 'px',
-          opacity: 1 - (dZoom < 100 ? dPage.tag : 0),
-          // scale: 0.8,
-        }"
-      >
-      <!-- 音频抽离到公共模块 -->
-      <component is="w-audio" :style="{scale:  dZoom / 100,right: '-10px', top: '-10'}" v-for="layer in dLayouts[0].layers"  :id="layer.uuid" :key="layer.uuid" :class="[layer, { 'layer-hover': layer.uuid === dHoverUuid || dActiveElement?.parent === layer.uuid, 'layer-no-hover': dActiveElement?.uuid === layer.uuid }, animationConfig(layer)]" :data-title="layer.type" :params="layer" :parent="dPage" :data-type="layer.type" :data-uuid="layer.uuid">
-      </component>
-        <slot />
-          <div
-            :id="pageDesignCanvasId"
-            class="design-canvas"
-            :data-type="dPage.type"
-            :data-uuid="dPage.uuid"
-            :style="{
-              width: dPage.width + 'px',
-              height: dPage.page_type === 'turnPage' ? 10000 / dZoom + '%' : dPage.height + 'px',
-              scale:  dZoom / 100,
-              transformOrigin: (dZoom >= 100 ? 'center' : 'left') + ' top',
-              backgroundColor: dPage.backgroundGradient ? undefined : dPage.backgroundColor,
-              backgroundImage: dPage.backgroundImage ? `url(${dPage?.backgroundImage})` : dPage.backgroundGradient || undefined,
-              backgroundSize: dPage.backgroundTransform?.x ? 'auto' : 'cover',
-              backgroundPositionX: (dPage.backgroundTransform?.x || 0) + 'px',
-              backgroundPositionY: (dPage.backgroundTransform?.y || 0) + 'px',
-              opacity: dPage.opacity + (dZoom < 100 ? dPage.tag : 0),
-            }"
-            @mousemove="dropOver($event)"
-            @drop="drop($event)"
-            @mouseup="drop($event)"
-          >
-          <!-- @mousedown="mousedown($event)"
-            @mousemove="mousemove($event)"
-            @mouseup="mouseup($event)"
-            @touchstart="touchstart($event)"
-            @touchend="touchend($event)" -->
-           <!-- <div v-for="layer in dLayouts[page_index].layers" ></div> -->
-           <div v-for="layer in dLayouts[currentPage - 1].layers" >
-              <component v-if="layer.type !== 'w-audio'" :is="layer.type" :id="layer.uuid" :key="layer.uuid" :class="['layer', { 'layer-hover': layer.uuid === dHoverUuid || dActiveElement?.parent === layer.uuid, 'layer-no-hover': dActiveElement?.uuid === layer.uuid }, animationConfig(layer)]" :data-title="layer.type" :params="layer" :parent="dPage" :data-type="layer.type" :data-uuid="layer.uuid">
-                <template v-if="layer.isContainer">
-                  <component :is="widget.type" v-for="widget in getChilds(layer.uuid)" :key="widget.uuid" child :class="['layer', { 'layer-no-hover': dActiveElement?.uuid !== widget.parent && dActiveElement?.parent !== widget.parent }]" :data-title="widget.type" :params="widget" :parent="layer" :data-type="widget.type" :data-uuid="widget.uuid" />
-                </template>
-              </component>
-            </div>
-            <!-- 旋转缩放组件 -->
-            <Moveable />  
-          </div>
+  <div id="editContent">
+    <div class="headBtnBox">
+      <el-button size="small">返回</el-button>
+      <div>
+        <el-button size="small">预览</el-button>
+        <el-button size="small" @click="save">保存</el-button>
       </div>
     </div>
-    <slot name="bottom" />
+    <div id="main" class="main-preview" :class="{'h5-preview': isH5 }" v-show="isShow"  
+        v-loading="loading"
+        element-loading-text="Loading..."
+        :element-loading-spinner="svg"
+        element-loading-svg-view-box="-10, -10, 50, 50"
+        element-loading-background="rgba(255, 255, 255, 1)"
+        style="scale: 0.8;margin-top: -22%;"
+        >
+        <!--  -->
+      <div id="page-design" ref="page_design" :style="{minWidth: isH5 ? '100%' : (dPage.width * dZoom) / 100 + dPresetPadding * 2 + 'px' }">
+        <div
+          id="out-page"
+          class="out-page"
+          :style="{
+            width: isH5 ? '100%' : (dPage.width * dZoom) / 100 + dPresetPadding * 2 + 'px',
+            opacity: 1 - (dZoom < 100 ? dPage.tag : 0),
+            // scale: 0.8,
+          }"
+        >
+        <!-- 音频抽离到公共模块 -->
+        <component is="w-audio" :style="{scale:  dZoom / 100,right: '-10px', top: '-10'}" v-for="layer in dLayouts[0].layers"  :id="layer.uuid" :key="layer.uuid" :class="[layer, { 'layer-hover': layer.uuid === dHoverUuid || dActiveElement?.parent === layer.uuid, 'layer-no-hover': dActiveElement?.uuid === layer.uuid }, animationConfig(layer)]" :data-title="layer.type" :params="layer" :parent="dPage" :data-type="layer.type" :data-uuid="layer.uuid">
+        </component>
+          <slot />
+            <div
+              :id="pageDesignCanvasId"
+              class="design-canvas"
+              :data-type="dPage.type"
+              :data-uuid="dPage.uuid"
+              :style="{
+                width: dPage.width + 'px',
+                height: dPage.page_type === 'turnPage' ? 10000 / dZoom + '%' : dPage.height + 'px',
+                scale:  dZoom / 100,
+                transformOrigin: (dZoom >= 100 ? 'center' : 'left') + ' top',
+                backgroundColor: dPage.backgroundGradient ? undefined : dPage.backgroundColor,
+                backgroundImage: dPage.backgroundImage ? `url(${dPage?.backgroundImage})` : dPage.backgroundGradient || undefined,
+                backgroundSize: dPage.backgroundTransform?.x ? 'auto' : 'cover',
+                backgroundPositionX: (dPage.backgroundTransform?.x || 0) + 'px',
+                backgroundPositionY: (dPage.backgroundTransform?.y || 0) + 'px',
+                opacity: dPage.opacity + (dZoom < 100 ? dPage.tag : 0),
+              }"
+              @mousemove="dropOver($event)"
+              @drop="drop($event)"
+              @mouseup="drop($event)"
+            >
+            <!-- @mousedown="mousedown($event)"
+              @mousemove="mousemove($event)"
+              @mouseup="mouseup($event)"
+              @touchstart="touchstart($event)"
+              @touchend="touchend($event)" -->
+            <!-- <div v-for="layer in dLayouts[page_index].layers" ></div> -->
+            <div v-for="layer in dLayouts[currentPage - 1].layers" >
+                <component v-if="layer.type !== 'w-audio'" :is="layer.type" :id="layer.uuid" :key="layer.uuid" :class="['layer', { 'layer-hover': layer.uuid === dHoverUuid || dActiveElement?.parent === layer.uuid, 'layer-no-hover': dActiveElement?.uuid === layer.uuid }, animationConfig(layer)]" :data-title="layer.type" :params="layer" :parent="dPage" :data-type="layer.type" :data-uuid="layer.uuid">
+                  <template v-if="layer.isContainer">
+                    <component :is="widget.type" v-for="widget in getChilds(layer.uuid)" :key="widget.uuid" child :class="['layer', { 'layer-no-hover': dActiveElement?.uuid !== widget.parent && dActiveElement?.parent !== widget.parent }]" :data-title="widget.type" :params="widget" :parent="layer" :data-type="widget.type" :data-uuid="widget.uuid" />
+                  </template>
+                </component>
+              </div>
+              <!-- 旋转缩放组件 -->
+              <Moveable />  
+            </div>
+        </div>
+      </div>
+      <slot name="bottom" />
+    </div>
+    <div class="controlBtnBox">
+      <div>
+        <!-- <el-button size="small">后撤</el-button>
+        <el-button size="small">前进</el-button> -->
+        <div :class="['operation-item', { disable: !undoable }]" @click="undoable ? handleHistory('undo') : ''"><i class="iconfont icon-undo" /></div>
+        <div :class="['operation-item', { disable: !redoable }]" @click="redoable ? handleHistory('redo') : ''"><i class="iconfont icon-redo" /></div>
+      </div>
+      <!-- 分页器 -->
+      <el-pagination
+        v-model:current-page="currentPage"
+        v-model:page-size="pageSize"
+        size="default"
+        :background="true"
+        layout="prev, ->, slot, next"
+        :total="total"
+        @current-change="handleCurrentChange"
+      >
+        <span style="padding: 0 10px;">{{currentPage}}/{{total}}</span>
+      </el-pagination>
+      <div>
+        <el-button size="small">页面</el-button>
+        <el-button size="small">设置</el-button>
+      </div>
+    </div>
   </div>
-  <!-- 分页器 -->
-  <el-pagination
-    v-model:current-page="currentPage"
-    v-model:page-size="pageSize"
-    size="default"
-    :background="true"
-    layout="prev, pager, next"
-    :total="total"
-    style="marginTop: -70px"
-    @current-change="handleCurrentChange"
-  />
 </template>
 
 <script lang="ts" setup>
+import api from '@/api'
+import { storeToRefs, createPinia  } from 'pinia'
 import { ElLoading, ElPagination } from 'element-plus'
-import { onMounted, Ref, ref, reactive } from 'vue'
+import { onMounted, Ref, ref, reactive,computed } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { getTarget } from '@/common/methods/target'
 import setWidgetData from '@/common/methods/DesignFeatures/setWidgetData'
 import PointImg from '@/utils/plugins/pointImg'
 import getComponentsData from '@/common/methods/DesignFeatures/setComponents'
 import { debounce } from 'throttle-debounce'
 import { move, moveInit } from '@/mixins/move'
-import { useCanvasStore, useControlStore, useWidgetStore } from '@/store'
-import { storeToRefs } from 'pinia'
+import { useCanvasStore, useControlStore, useWidgetStore, useHistoryStore } from '@/store'
 import { TPageState } from '@/store/design/canvas/d'
 import watermark from './comps/pageWatermark.vue'
 import useScroll from './hooks/useScroll'
-  import Moveable from '@/components/business/moveable/Moveable.vue'
+import Moveable from '@/components/business/moveable/Moveable.vue'
+import useNotification from '@/common/methods/notification'
+import useHistory from '@/common/hooks/history'
+// useHistory()  // pinia问题
 
 // 页面设计组件
 type TProps = {
@@ -113,9 +137,13 @@ type TParentData = {
 
 type TSetting = Partial<TPageState>
 
+const route = useRoute()
+const router = useRouter()
 const controlStore = useControlStore()
 const widgetStore = useWidgetStore()
+const historyStore = useHistoryStore()
 const canvasStore = useCanvasStore()
+const { dHistoryParams, dHistoryStack } = storeToRefs(useHistoryStore())
 
 const { pageDesignCanvasId, isH5 } = defineProps<TProps>()
 const { dPage } = storeToRefs(useCanvasStore())
@@ -234,6 +262,7 @@ async function handleMouseMove(e: MouseEvent) {
 }
 
 async function handleSelection(e: MouseEvent) {
+  // 重置uuid为null
   dActiveElement.value = null;
   if (e.which === 3) {
     return
@@ -244,10 +273,18 @@ async function handleSelection(e: MouseEvent) {
   let type = target.getAttribute('data-type')
   if (type) {
     let uuid = target.getAttribute('data-uuid')
+    console.log('dLayouts', dLayouts);
+    console.log('dWidgets', dWidgets.value);
+    console.log('dActiveElement', dActiveElement.value);
+    
+    // 给当前点击的uuid赋值
     dHoverUuid.value = uuid
+    // 切换当前页面数据（为当前页数据）
+    dWidgets.value = dLayouts.value[currentPage.value - 1].layers;
     if (uuid !== '-1' && !dAltDown.value) {
       // let widget = dWidgets.value.find((item: { uuid: string }) => item.uuid === uuid)
-      let widget = dLayouts.value[currentPage.value - 1].layers.find((item: { uuid: string }) => item.uuid === uuid)
+      let widget = dWidgets.value.find((item: { uuid: string }) => item.uuid === uuid)
+      // 切换当前选中的元素控件(匹配当前页面数据的选中元素uuid)
       dActiveElement.value = widget;
       if (!widget || !dActiveElement.value) return
       if (widget.parent !== '-1' && widget.parent !== dActiveElement.value.uuid && widget.parent !== dActiveElement.value.parent) {
@@ -428,9 +465,50 @@ async function drop(e: MouseEvent) {
 function handleCurrentChange(e){
   controlStore.setShowMoveable(false)
 }
+// 保存作品
+async function save(hasCover: boolean = false) {
+  // 没有任何修改记录则不保存(暂时注释)
+  // if (dHistoryStack.value.changes.length <= 0) {
+  //   return useNotification('保存失败', '可能是没有修改任何东西哦~', { type: 'error' })
+  // }
+  controlStore.setShowMoveable(false) // 清理掉上一次的选择框
+  // console.log(proxy?.dPage, proxy?.dWidgets)
+  const { page_type } = dPage.value
+  const { id } = route.query
+  // const cover = hasCover ? await draw() : undefined
+  // const widgets = dWidgets.value // reviseData()
+  const data = widgetStore.dLayouts
+  console.log(data);
+  data.map(item => {
+    item.global.page_type =  page_type; // 接口不是我们的，公共参数没有接收这个参数，只能先放在这里
+  })
+  console.log(dPage)
+  // cover, 
+  const { id: newId, stat, msg } = await api.home.saveWorks({ id: (id as string), title: dPage.value.title || '未命名设计', data: JSON.stringify(data), width: dPage.value.width, height: dPage.value.height, autoScroll: dPage.value.autoScroll, scrollSpeed: dPage.value.scrollSpeed, page_type: page_type || 'turnPage'  })
+  stat !== 0 ? useNotification('保存成功', '可在"我的作品"中查看') : useNotification('保存失败', msg, { type: 'error' })
+  !id && router.push({ path: '/home', query: { id: newId }, replace: true })
+  controlStore.setShowMoveable(true)
+}
+// 前进和回退
+function handleHistory(data: "undo" | "redo") {
+  historyStore.handleHistory(data)
+}
+const undoable = computed(() => {
+  return dHistoryParams.value.stackPointer >= 0
+  // return !(
+  //   dHistoryParams.value.index === -1 || 
+  //   (dHistoryParams.value.index === 0 && dHistoryParams.value.length === dHistoryParams.value.maxLength))
+})
+
+const redoable = computed(() => {
+  return !(dHistoryParams.value.stackPointer === dHistoryStack.value.changes.length - 1)
+})
 </script>
 
 <style lang="less" scoped>
+#editContent{
+  background-color: #f3f5f7;
+}
 #main {
   overflow: auto;
   position: relative;
@@ -475,5 +553,21 @@ function handleCurrentChange(e){
 }
 .h5-preview .design-canvas{
   overflow-x: hidden !important;
+}
+// 头部按钮组样式
+.headBtnBox{
+  display: flex;
+  justify-content: space-between;
+  width: 94%;
+  padding: 15px 0;
+  margin: auto;
+}
+// 控制按钮组样式
+.controlBtnBox{
+  display: flex;
+  justify-content: space-between;
+  width: 94%;
+  padding: 15px 0;
+  margin: -22% auto 0;
 }
 </style>
