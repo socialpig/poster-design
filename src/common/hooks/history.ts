@@ -16,8 +16,6 @@ import { useHistoryStore, useWidgetStore } from '@/store'
 const blackClass: string[] = ['operation-item', 'icon-undo', 'icon-redo']
 const whiteKey: string[] = ['ArrowLeft', 'ArrowDown', 'ArrowRight', 'ArrowUp', 'Backspace']
 
-const historyStore = useHistoryStore()
-const widgetStore = useWidgetStore()
 // const historyWorker = new WebWorker('history')
 const diffLayouts = new historyFactory()
 
@@ -30,6 +28,8 @@ function noPutHistory(target: any) {
 }
 
 export default () => {
+  const historyStore = useHistoryStore()
+  const widgetStore = useWidgetStore()
   // historyWorker.start(null, (changes: any) => {
   //   changes.patches.length > 0 && historyStore.changeHistory(changes)
   //   processing = false
@@ -42,9 +42,12 @@ export default () => {
     document.addEventListener(
       'mousedown',
       (e: any) => {
+        console.log('history -- diffLayouts', diffLayouts);
+        
         if (noPutHistory(e.target)) return
         // historyWorker.send(!processing ? { op: 'diff', data: JSON.stringify(widgetStore.dLayouts) } : null)
         diffLayouts.postMessage(!processing ? { op: 'diff', data: JSON.stringify(widgetStore.dLayouts) } : null)
+        console.log('history -- diffLayouts', diffLayouts);
         processing = true
       },
       false,

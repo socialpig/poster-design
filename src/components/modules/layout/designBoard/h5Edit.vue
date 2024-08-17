@@ -108,7 +108,6 @@ import api from '@/api'
 import { storeToRefs, createPinia  } from 'pinia'
 import { ElLoading, ElPagination } from 'element-plus'
 import { onMounted, Ref, ref, reactive,computed } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
 import { getTarget } from '@/common/methods/target'
 import setWidgetData from '@/common/methods/DesignFeatures/setWidgetData'
 import PointImg from '@/utils/plugins/pointImg'
@@ -122,7 +121,7 @@ import useScroll from './hooks/useScroll'
 import Moveable from '@/components/business/moveable/Moveable.vue'
 import useNotification from '@/common/methods/notification'
 import useHistory from '@/common/hooks/history'
-// useHistory()  // pinia问题
+import { useRoute, useRouter } from 'vue-router'
 
 // 页面设计组件
 type TProps = {
@@ -184,6 +183,9 @@ onMounted(() => {
       elements[i].style.scale = (dZoom.value / 100);
     }
     total.value = dLayouts.value.length;
+// const pinia = createPinia()
+// use(pinia)
+useHistory()  // pinia问题
   }, 1e3);
   const pageDesignEl = document.getElementById('page-design')
   if (!pageDesignEl) return
