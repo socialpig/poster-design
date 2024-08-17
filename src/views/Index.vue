@@ -4,7 +4,7 @@
  * @Description: 
  * @LastEditors: ShawnPhang <https://m.palxp.cn>
  * @LastUpdateContent: Support typescript
- * @LastEditTime: 2024-04-20 11:14:13
+ * @LastEditTime: 2024-08-12 15:53:20
 -->
 <template>
   <div id="page-design-index" ref="pageDesignIndex" class="page-design-bg-color">
@@ -25,6 +25,8 @@
           <el-divider direction="vertical" />
         </div>
         <HeaderOptions ref="optionsRef" v-model="state.isContinue" @change="optionsChange">
+          <!-- <el-button size="large" class="primary-btn" @click="dealWith('save')">{{ $t('header.save') }}</el-button> -->
+          <el-button ref="ref4" size="large" class="primary-btn" type="primary" @click="dealWith('download')">{{ $t('header.download') }}</el-button>
           <el-button size="large" class="primary-btn" @click="dealWith('newDesign')">新建作品</el-button>
           <el-button size="large" class="primary-btn" @click="dealWith('save')">保存</el-button>
           <el-button ref="previewRef" size="large" class="primary-btn" plain type="primary" @click="dealWith('preview')">预览</el-button>
