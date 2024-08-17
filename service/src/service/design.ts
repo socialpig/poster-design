@@ -16,6 +16,22 @@ const { checkCreateFolder, randomCode, send } = require('../utils/tools.ts')
 const FileUrl = 'http://localhost:7001/static/'
 
 module.exports = {
+  // design/poster 获取模板列表（虚拟）
+  async getPoster(req: any, res: Response) {
+    /**
+     * @api {get} /design/list 获取模板列表（虚拟）
+     * @apiVersion 1.0.0
+     * @apiGroup design
+     */
+    const { id } = req.query
+    
+    const tempPath = `../mock/templates/${id}.json`
+    try {
+      const poster = fs.readFileSync(path.resolve(__dirname, tempPath), 'utf8')
+      
+      send.success(res, JSON.parse(poster) )
+    } catch (error) {}
+  },
   // design/list 获取模板列表（虚拟）
   async getTemplates(req: any, res: Response) {
     /**
@@ -38,11 +54,17 @@ module.exports = {
      * @apiGroup design
      */
     const { cate, type, id } = req.query
+    
     const dPath = type == 1 ? `../mock/components/detail/${id}.json` : `../mock/templates/${id}.json`
+    
     try {
       const detail = fs.readFileSync(path.resolve(__dirname, dPath), 'utf8')
       send.success(res, JSON.parse(detail))
-    } catch (error) {}
+      
+    } catch (error) {
+      console.log(error);
+      
+    }
   },
   // design/material 获取素材（虚拟）
   async getMaterial(req: any, res: any) {
@@ -91,11 +113,13 @@ module.exports = {
         width,
         height,
       }
+      
       fs.writeFileSync(savePath, JSON.stringify(jsonData))
       // 生成封面
       const size = width > height ? 640 : 320
-      const fetchScreenshotUrl = `http://localhost:7001/api/screenshots?tempid=${id}&tempType=${type}&width=${width}&height=${height}&type=cover&size=${size}&quality=75`
-      await axios.get(fetchScreenshotUrl, { responseType: 'arraybuffer' })
+      // const fetchScreenshotUrl = `http://localhost:7001/api/screenshots?tempid=${id}&tempType=${type}&width=${width}&height=${height}&type=cover&size=${size}&quality=75`
+      
+      // await axios.get(fetchScreenshotUrl, { responseType: 'arraybuffer' })
       // 保存到其他地方可以设置 responseType: 'arraybuffer' 后操作buffer，这里只为了得到封面，发起请求就可以了
       if (isAdd) {
         const listVal = fs.readFileSync(path.resolve(__dirname, `../mock/${listPath}`), 'utf8')

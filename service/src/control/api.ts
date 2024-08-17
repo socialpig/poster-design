@@ -18,4 +18,5 @@ module.exports = {
   GET_MATERIAL: '/design/material',
   GET_PHOTOS: '/design/imgs',
   UPDATE_TEMPLATE: '/design/edit',
+  GET_POSTER: '/design/poster',
 }

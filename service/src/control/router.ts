@@ -22,5 +22,6 @@ rRouter.get(api.GET_TEMPLATE, designService.getDetail)
 rRouter.get(api.GET_MATERIAL, designService.getMaterial)
 rRouter.get(api.GET_PHOTOS, designService.getPhotos)
 rRouter.post(api.UPDATE_TEMPLATE, designService.saveTemplate)
+rRouter.get(api.GET_POSTER, designService.getPoster)
 
 module.exports = rRouter

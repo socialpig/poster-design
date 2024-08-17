@@ -217,6 +217,8 @@
         type: Number(type)
       }
       const { data, width, height } = await api.home[id ? 'getWorks' : 'getTempDetail'](postData)
+      console.log('{ data, width, height }', { data, width, height });
+      
       let content = JSON.parse(data)
       const isGroupTemplate = Number(type) == 1
 
