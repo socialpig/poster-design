@@ -1,5 +1,5 @@
 <template>
-  <div id="page-design-index" ref="pageDesignIndex">
+  <div ref="pageDesignIndex">
     <div class="page-design-index-wrap">
       <design-board class="page-design-wrap fixed-canvas" pageDesignCanvasId="page-design-canvas"></design-board>
     </div>
@@ -19,7 +19,7 @@ import zoomControl from '@/components/modules/layout/zoomControl/index.vue'
 import { useRoute } from 'vue-router'
 // import { wGroupSetting } from '@/components/modules/widgets/wGroup/groupSetting'
 import { storeToRefs } from 'pinia'
-import { useGroupStore, useCanvasStore, useWidgetStore } from '@/store'
+import { useCanvasStore, useWidgetStore } from '@/store'
 
 type TState = {
   style: StyleValue
@@ -32,14 +32,10 @@ const state = reactive<TState>({
   },
 })
 const pageStore = useCanvasStore()
-// const groupStore = useGroupStore()
 const widgetStore = useWidgetStore()
 const { dPage } = storeToRefs(pageStore)
 
 onMounted(() => {
-  // groupStore.initGroupJson(JSON.stringify(wGroupSetting))
-  // store.dispatch('initGroupJson', JSON.stringify(wGroupSetting))
-  // initGroupJson(JSON.stringify(wGroup.setting))
   nextTick(() => {
     load()
   })
@@ -51,19 +47,19 @@ async function load() {
   const { id, tempid, tempType: type = 0, index = 0  }: any = route.query 
   if (id || tempid) {
     const postData = {
-      id: Number(id || tempid),
+      id: id || tempid,
       type: Number(type)
     }
     const { data, width, height } = await api.home[id ? 'getWorks' : 'getTempDetail'](postData)
     let content = JSON.parse(data)
     const isGroupTemplate = Number(type) == 1
 
-    if (Array.isArray(content)) {
+    if (Array.isArray(content) && !isGroupTemplate) {
       const { global, layers } = content[index]
       content = {page: global, widgets: layers}
     }
     const widgets = isGroupTemplate ? content : content.widgets
-
+    
     if (isGroupTemplate) {
       dPage.value.width = width
       dPage.value.height = height

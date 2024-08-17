@@ -36,9 +36,8 @@
 // const NAME = 'w-image'
 import { CSSProperties, StyleValue, computed, nextTick, onBeforeUnmount, onMounted, onUpdated, reactive, ref, watch } from 'vue'
 
-import { getMatrix } from '@/common/methods/handleTransform'
+// import { getMatrix } from '@/common/methods/handleTransform'
 import setting from "./wImageSetting"
-import PointImg from '@/utils/plugins/pointImg'
 // import { useSetupMapGetters } from '@/common/hooks/mapGetters'
 import { useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia'
@@ -232,12 +231,6 @@ function updateRecord() {
     }
   }
   updateZoom()
-  // 获取点位
-  if (!isDraw.value) {
-    if (targetRef.value) {
-      const read = new PointImg(targetRef.value)
-    }
-  }
 }
 
 function setTransform(attrName: string, value: string | number) {
@@ -256,8 +249,7 @@ function setTransform(attrName: string, value: string | number) {
   widgetStore.updateWidgetData({
     uuid: props.params.uuid,
     key: 'transform',
-    value: setValue,
-    pushHistory: false,
+    value: setValue
   })
   // store.dispatch("updateWidgetData", {
   //   uuid: props.params.uuid,
