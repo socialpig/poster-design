@@ -10,7 +10,8 @@ const isDev = process.env.NODE_ENV === 'development'
 // 服务器常用修改项
 const serviceComfig = {
     port: 7001, // 端口号
-    website: 'http://127.0.0.1:5173/', // 编辑器项目的地址
+    // website: 'http://127.0.0.1:5173/', // 编辑器项目的地址
+    website: 'http://192.168.0.108/', // 编辑器项目的地址
     filePath: '/cache/' // 生成图片保存的目录
 }
 

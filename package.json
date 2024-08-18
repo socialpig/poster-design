@@ -14,6 +14,7 @@
     "publish-fast": "git add . && git commit -m 'build: auto publish' && sh script/publish.sh"
   },
   "dependencies": {
+    "@element-plus/icons": "^0.0.11",
     "@palxp/color-picker": "workspace:*",
     "@palxp/image-extraction": "workspace:*",
     "@scena/guides": "^0.18.1",

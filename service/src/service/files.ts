@@ -10,7 +10,7 @@ const multiparty = require('multiparty')
 const { filePath } = require('../configs.ts')
 const { checkCreateFolder, randomCode, copyFile, send } = require('../utils/tools.ts')
 
-const FileUrl = 'http://localhost:7001/static/'
+const FileUrl = 'http://192.168.0.108:7001/static/'
 
 module.exports = {
   // api/file/upload 上传接口

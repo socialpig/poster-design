@@ -17,7 +17,8 @@ export default {
   VERSION: version,
   APP_NAME: '阿仁邀请函',
   COPYRIGHT: 'ShawnPhang - Design.pPalxp.cn',
-  API_URL: isDev ? 'http://localhost:7001' : '', // 后端地址
+  // API_URL: isDev ? 'http://localhost:7001' : '', // 后端地址
+  API_URL: isDev ? 'http://192.168.0.108:7001' : '', // 后端地址
   SCREEN_URL: isDev ? 'http://localhost:7001' : '', // 截图服务地址
   IMG_URL: 'https://store.palxp.cn/', // 七牛云资源地址
   // ICONFONT_URL: '//at.alicdn.com/t/font_3223711_74mlzj4jdue.css',

@@ -13,7 +13,7 @@ const multiparty = require('multiparty')
 const { filePath } = require('../configs.ts')
 const { checkCreateFolder, randomCode, send } = require('../utils/tools.ts')
 
-const FileUrl = 'http://localhost:7001/static/'
+const FileUrl = 'http://192.168.0.108:7001/static/'
 
 module.exports = {
   // design/poster 获取模板列表（虚拟）
@@ -117,7 +117,7 @@ module.exports = {
       fs.writeFileSync(savePath, JSON.stringify(jsonData))
       // 生成封面
       const size = width > height ? 640 : 320
-      // const fetchScreenshotUrl = `http://localhost:7001/api/screenshots?tempid=${id}&tempType=${type}&width=${width}&height=${height}&type=cover&size=${size}&quality=75`
+      // const fetchScreenshotUrl = `http://192.168.0.108:7001/api/screenshots?tempid=${id}&tempType=${type}&width=${width}&height=${height}&type=cover&size=${size}&quality=75`
       
       // await axios.get(fetchScreenshotUrl, { responseType: 'arraybuffer' })
       // 保存到其他地方可以设置 responseType: 'arraybuffer' 后操作buffer，这里只为了得到封面，发起请求就可以了

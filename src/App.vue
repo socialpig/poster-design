@@ -29,7 +29,7 @@ const locale = computed(() => {
 
 <style lang="less">
 #app-view {
-  min-width: 1180px;
+  // min-width: 1180px;
 }
 @keyframes rotate {
   from {

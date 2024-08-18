@@ -5,6 +5,7 @@
 -->
 <template>
   <div id="editContent">
+    <!-- 头部组 -->
     <div class="headBtnBox">
       <el-button size="small">返回</el-button>
       <div>
@@ -12,6 +13,7 @@
         <el-button size="small" @click="save">保存</el-button>
       </div>
     </div>
+    <!-- 内容展示区域 -->
     <div id="main" class="main-preview" :class="{'h5-preview': isH5 }" v-show="isShow"  
         v-loading="loading"
         element-loading-text="Loading..."
@@ -76,6 +78,7 @@
       </div>
       <slot name="bottom" />
     </div>
+    <!-- 底部控制栏 -->
     <div class="controlBtnBox">
       <div>
         <!-- <el-button size="small">后撤</el-button>
@@ -100,6 +103,8 @@
         <el-button size="small">设置</el-button>
       </div>
     </div>
+    <!-- 右侧面板 -->
+    <style-panel-h5></style-panel-h5>
   </div>
 </template>
 
@@ -185,7 +190,7 @@ onMounted(() => {
     total.value = dLayouts.value.length;
 // const pinia = createPinia()
 // use(pinia)
-useHistory()  // pinia问题
+// useHistory()  // pinia问题
   }, 1e3);
   const pageDesignEl = document.getElementById('page-design')
   if (!pageDesignEl) return
@@ -266,6 +271,7 @@ async function handleMouseMove(e: MouseEvent) {
 async function handleSelection(e: MouseEvent) {
   // 重置uuid为null
   dActiveElement.value = null;
+  console.log('dActiveElement', dActiveElement.value);
   if (e.which === 3) {
     return
   }
@@ -486,7 +492,7 @@ async function save(hasCover: boolean = false) {
   })
   console.log(dPage)
   // cover, 
-  const { id: newId, stat, msg } = await api.home.saveWorks({ id: (id as string), title: dPage.value.title || '未命名设计', data: JSON.stringify(data), width: dPage.value.width, height: dPage.value.height, autoScroll: dPage.value.autoScroll, scrollSpeed: dPage.value.scrollSpeed, page_type: page_type || 'turnPage'  })
+  const { id: newId, stat, msg } = await api.home.saveTemp({ id: (id as string), title: dPage.value.title || '未命名设计', data: JSON.stringify(data), width: dPage.value.width, height: dPage.value.height, autoScroll: dPage.value.autoScroll, scrollSpeed: dPage.value.scrollSpeed, page_type: page_type || 'turnPage'  })
   stat !== 0 ? useNotification('保存成功', '可在"我的作品"中查看') : useNotification('保存失败', msg, { type: 'error' })
   !id && router.push({ path: '/home', query: { id: newId }, replace: true })
   controlStore.setShowMoveable(true)

@@ -9,7 +9,7 @@ import fs from 'fs'
 const path = require('path')
 const imageSize = require('image-size')
 const { filePath: StaticPath } = require('../configs.ts')
-const FileUrl = 'http://localhost:7001/static/'
+const FileUrl = 'http://192.168.0.108:7001/static/'
 
 module.exports = {
   copyFile(sourceFile: string, destinationFile: string): Promise<void> {

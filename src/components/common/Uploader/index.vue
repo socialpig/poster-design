@@ -92,12 +92,12 @@ const uploadQueue = async () => {
     uploading = true
     const file = uploadList[0]
     if (file) {
-      if (file.size <= 1024 * 1024) {
+      if (file.size <= 1024 * 1024 * 5) {
         tempSimpleRes = await qiNiuUpload(file) // 队列有文件，执行上传
         const { width, height } = await getImage(file)
         useNotification('上传成功', '', { position: 'bottom-left' })
         emit('done', { width, height, url: tempSimpleRes?.url }) // 单个文件进行响应
-      } else useNotification('爱护小水管', '请上传小于 1M 的图片哦!', { type: 'error', position: 'bottom-left' })
+      } else useNotification('爱护小水管', '请上传小于 5M 的图片哦!', { type: 'error', position: 'bottom-left' })
       uploading = false
       handleRemove() // 移除已上传文件
       index++

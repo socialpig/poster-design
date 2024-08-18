@@ -103,33 +103,23 @@ const state = reactive<TState>({
 
 // 保存作品
 async function save(hasCover: boolean = false) {
-  // controlStore.setShowMoveable(false) // 清理掉上一次的选择框
-  // const { id, tempid, page_type } = route.query
-  // const cover = hasCover ? await draw() : undefined
-  // const data = widgetStore.dLayouts
-  // console.log(data);
-  // data.map(item => {
-  //   item.global.page_type =  page_type || dPage.value.page_type; // 接口不是我们的，公共参数没有接收这个参数，只能先放在这里
-  // })
-  // console.log(dPage)
-  // const { id: newId, stat, msg } = await api.home.saveWorks({ cover, id: (id as string), title: state.title || '未命名设计', data: JSON.stringify(data), temp_id: (tempid as string), width: dPage.value.width, height: dPage.value.height, autoScroll: dPage.value.autoScroll, scrollSpeed: dPage.value.scrollSpeed, page_type: page_type || 'turnPage'  })
-  // stat !== 0 ? useNotification('保存成功', '可在"我的作品"中查看') : useNotification('保存失败', msg, { type: 'error' })
-  // !id && router.push({ path: '/home', query: { id: newId }, replace: true })
-  // controlStore.setShowMoveable(true)
+  controlStore.setShowMoveable(false) // 清理掉上一次的选择框
+  const { id, tempid, page_type } = route.query
+  const cover = hasCover ? await draw() : undefined
+  const data = widgetStore.dLayouts
+  console.log(data);
+  data.map(item => {
+    item.global.page_type =  page_type || dPage.value.page_type; // 接口不是我们的，公共参数没有接收这个参数，只能先放在这里
+  })
+  console.log(dPage)
+  const { id: newId, stat, msg } = await api.home.saveTemp({ cover, id: (id as string), title: state.title || '未命名设计', data: JSON.stringify(data), temp_id: (tempid as string), width: dPage.value.width, height: dPage.value.height, autoScroll: dPage.value.autoScroll, scrollSpeed: dPage.value.scrollSpeed, page_type: page_type || 'turnPage'  })
+  stat !== 0 ? useNotification('保存成功', '可在"我的作品"中查看') : useNotification('保存失败', msg, { type: 'error' })
+  !id && router.push({ path: '/home', query: { id: newId }, replace: true })
+  controlStore.setShowMoveable(true)
+
   // ↑↑↑ 上面是旧的
   // 保存用户作品的原理和保存模板是相通的，所以这里反过来用模板示例
-  await saveTemp()
-  // // 没有任何修改记录则不保存
-  // if (dHistoryStack.value.changes.length <= 0) {
-  //   return
-  // }
-  // controlStore.setShowMoveable(false) // 清理掉上一次的选择框
-  // const { id, tempid } = route.query
-  // const data = widgetStore.dLayouts
-  // const { id: newId, stat, msg } = await api.home.saveWorks({ id: id as string, title: state.title || '未命名设计', data: JSON.stringify(data), temp_id: tempid as string, width: dPage.value.width, height: dPage.value.height })
-  // stat !== 0 ? useNotification('保存成功', '可在"我的作品"中查看') : useNotification('保存失败', msg, { type: 'error' })
-  // !id && router.push({ path: '/home', query: { id: newId }, replace: true })
-  // controlStore.setShowMoveable(true)
+  // await saveTemp()
 }
 
 // 保存模板
