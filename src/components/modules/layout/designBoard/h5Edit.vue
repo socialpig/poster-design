@@ -103,7 +103,9 @@
         <el-button size="small">设置</el-button>
       </div>
     </div>
-    <!-- 右侧面板 -->
+    <!-- 底部面板简略 -->
+    <style-panel-h5-simple :dActiveElement="dActiveElement"></style-panel-h5-simple>
+    <!-- 底部面板详细 -->
     <style-panel-h5></style-panel-h5>
   </div>
 </template>

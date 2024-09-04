@@ -3,7 +3,7 @@
     v-model="isShowStylePanel"
     title="设置"
     direction="btt"
-    :before-close="handleClose"
+    @close="handleClose"
     size="90%"
   >
   <!-- <div id="style-panel-h5" v-if="isShowStylePanel"> -->
@@ -80,14 +80,19 @@ const showGroupCombined = ref(false)
 let isShowStylePanel = ref(false)
 // const { dActiveElement, dWidgets, dSelectWidgets } = useSetupMapGetters(['dActiveElement', 'dWidgets', 'dSelectWidgets'])
 const { dActiveElement, dWidgets, dSelectWidgets } = storeToRefs(widgetStore)
+console.log('inPanel', dSelectWidgets.value);
 
 watch(
-  dSelectWidgets,
+  dActiveElement,
   (items) => {
-    isShowStylePanel.value = true;
-    setTimeout(() => {
-      showGroupCombined.value = items.length > 1
-    }, 100)
+    console.log('items====', items);
+    
+    if(items && items.showSetting){
+      isShowStylePanel.value = true;
+      setTimeout(() => {
+        showGroupCombined.value = items.length > 1
+      }, 100)
+    }
   },
   {
     deep: true
@@ -123,6 +128,10 @@ function openAnimationEdit(){
   console.log( dActiveElement, dWidgets, dSelectWidgets, dPage );
   
   // animationEditRef.value?.open()
+}
+function handleClose(){
+  dActiveElement.value.showSetting = false;
+  isShowStylePanel.value = false;
 }
 </script>
 
