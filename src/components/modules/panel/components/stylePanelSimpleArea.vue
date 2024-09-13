@@ -1,7 +1,7 @@
 <template>
   <div class="simpleArea">
     <!-- 文本 -->
-    <div v-if="dActiveElement.type === 'w-text'" @click="fnChangeText">更换文本</div>
+    <div v-if="dActiveElement.type === 'w-text' || dActiveElement.type === 'w-qrcode'" @click="fnChangeText">更换文本</div>
     <!-- 日历 -->
     <div v-else-if="dActiveElement.type === 'w-calendar'">
       <!-- {{dActiveElement.value}} -->
@@ -26,9 +26,9 @@
     :before-upload="beforeAvatarUpload"
     :on-preview="handlePreview"
     :on-remove="handleRemove"
+    accept=".jpg,.jpeg,.png,.gif,.svg,.ico"
   >
-    <!-- <img v-if="imageUrl" :src="imageUrl" class="avatar" /> -->
-    <el-icon class="avatar-uploader-icon"><Plus /></el-icon>
+    <div class="uploadBtn">更换图片</div>
   </el-upload>
 
   </div>
@@ -44,6 +44,7 @@ import { ElDatePicker,ElMessage ,ElUpload } from 'element-plus'
 import type { UploadProps } from 'element-plus'
 import { Plus } from '@element-plus/icons-vue'
 import { log } from 'console';
+import { display } from 'html2canvas/dist/types/css/property-descriptors/display'
 const widgetStore = useWidgetStore()
 const { dActiveElement, dWidgets, dSelectWidgets } = storeToRefs(widgetStore)
 let isShowChangeText = ref(false);
@@ -96,37 +97,23 @@ function handlePreview(file) {
 
 <style lang="less" scoped>
 .simpleArea{
-  :deep(.el-input__wrapper){
-    background-color: unset !important;
-    box-shadow: unset;
+  width: 100%;
+  height: 100%;
+  >div, .uploadBtn, :deep(.el-upload--text){
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
-  :deep(.avatar-uploader-icon) {
-  font-size: 28px;
-  color: #8c939d;
-  width: 178px;
-  height: 178px;
-  text-align: center;
+  .avatar-uploader{
+    width: 100%;
+  }
+  :deep(.el-upload):active, :deep(.el-upload):focus{
+    background-color: #f3f3f3 !important;
+    box-shadow: unset;
+    border-color: #f3f3f3;
+    background-color: #f3f3f3;
+  }
 }
-}
-.avatar-uploader .avatar {
-  width: 178px;
-  height: 178px;
-  display: block;
-}
-</style>
-
-<style>
-.avatar-uploader .el-upload {
-  border: 1px dashed var(--el-border-color);
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  transition: var(--el-transition-duration-fast);
-}
-
-.avatar-uploader .el-upload:hover {
-  border-color: var(--el-color-primary);
-}
-
 </style>

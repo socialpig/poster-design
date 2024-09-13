@@ -4,8 +4,18 @@
       <h4>修改</h4>
     </template>
     <template #default>
+      <!-- 文本 -->
       <el-input
+        v-if="dActiveElement.type === 'w-text'"
         v-model="dActiveElement.text"
+        :rows="8"
+        type="textarea"
+        placeholder="Please input"
+      />
+      <!-- 二维码 -->
+      <el-input
+        v-else-if="dActiveElement.type === 'w-qrcode'"
+        v-model="dActiveElement.value"
         :rows="8"
         type="textarea"
         placeholder="Please input"

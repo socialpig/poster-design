@@ -10,7 +10,8 @@
       <el-button size="small">返回</el-button>
       <div>
         <el-button size="small">预览</el-button>
-        <el-button size="small" @click="save">保存</el-button>
+        <el-button size="small" type="primary" plain @click="save">保存</el-button>
+        <el-button size="small" type="primary" class="helpMake" @click="helpMake">专业代制作</el-button>
       </div>
     </div>
     <!-- 内容展示区域 -->
@@ -72,7 +73,7 @@
                 </component>
               </div>
               <!-- 旋转缩放组件 -->
-              <Moveable />  
+              <Moveable :isH5="true" />  
             </div>
         </div>
       </div>
@@ -83,8 +84,8 @@
       <div>
         <!-- <el-button size="small">后撤</el-button>
         <el-button size="small">前进</el-button> -->
-        <div :class="['operation-item', { disable: !undoable }]" @click="undoable ? handleHistory('undo') : ''"><i class="iconfont icon-undo" /></div>
-        <div :class="['operation-item', { disable: !redoable }]" @click="redoable ? handleHistory('redo') : ''"><i class="iconfont icon-redo" /></div>
+        <!-- <div :class="['operation-item', { disable: !undoable }]" @click="undoable ? handleHistory('undo') : ''"><i class="iconfont icon-undo" /></div>
+        <div :class="['operation-item', { disable: !redoable }]" @click="redoable ? handleHistory('redo') : ''"><i class="iconfont icon-redo" /></div> -->
       </div>
       <!-- 分页器 -->
       <el-pagination
@@ -99,8 +100,8 @@
         <span style="padding: 0 10px;">{{currentPage}}/{{total}}</span>
       </el-pagination>
       <div>
-        <el-button size="small">页面</el-button>
-        <el-button size="small">设置</el-button>
+        <!-- <el-button size="small">页面</el-button> -->
+        <el-button size="small" @click="openSetting">设置</el-button>
       </div>
     </div>
     <!-- 底部面板简略 -->
@@ -113,8 +114,8 @@
 <script lang="ts" setup>
 import api from '@/api'
 import { storeToRefs, createPinia  } from 'pinia'
-import { ElLoading, ElPagination } from 'element-plus'
-import { onMounted, Ref, ref, reactive,computed } from 'vue'
+import { ElLoading, ElPagination, messageConfig } from 'element-plus'
+import { onMounted, Ref, ref, reactive,computed, watch } from 'vue'
 import { getTarget } from '@/common/methods/target'
 import setWidgetData from '@/common/methods/DesignFeatures/setWidgetData'
 import PointImg from '@/utils/plugins/pointImg'
@@ -153,7 +154,8 @@ const { dHistoryParams, dHistoryStack } = storeToRefs(useHistoryStore())
 
 const { pageDesignCanvasId, isH5 } = defineProps<TProps>()
 const { dPage } = storeToRefs(useCanvasStore())
-let { dZoom, dPresetPadding, dPaddingTop, dScreen } = storeToRefs(canvasStore)
+// let { dZoom, dPresetPadding, dPaddingTop, dScreen } = storeToRefs(canvasStore)
+let { dPresetPadding, dPaddingTop, dScreen } = storeToRefs(canvasStore)
 const { dDraging, showRotatable, dAltDown, dSpaceDown } = storeToRefs(controlStore)
 const { dWidgets, dActiveElement, dSelectWidgets, dHoverUuid,dLayouts } = storeToRefs(widgetStore)
 // 分页设置
@@ -180,6 +182,7 @@ setTimeout(() => {
 }, 100);
 let _dropIn: string | null = ''
 let _srcCache: string | null = ''
+let dZoom = ref(100)
 onMounted(() => {
   getScreen()
   setTimeout(() => {
@@ -271,8 +274,8 @@ async function handleMouseMove(e: MouseEvent) {
 }
 
 async function handleSelection(e: MouseEvent) {
-  // 重置uuid为null
-  dActiveElement.value = null;
+  // 重置uuid为null,TODO --- 暂时注释
+  // dActiveElement.value = null;
   console.log('dActiveElement', dActiveElement.value);
   if (e.which === 3) {
     return
@@ -399,28 +402,28 @@ async function drop(e: MouseEvent) {
   const lostX = e.x - canvasEl.getBoundingClientRect().left
   const lostY = e.y - canvasEl.getBoundingClientRect().top
   // 放置组合
-  if (type === 'group') {
-    let parent: TParentData = {}
-    const componentItem = await getComponentsData(item)
-    // item = await getComponentsData(item)
-    componentItem.forEach((element) => {
-      if (element.type === 'w-group') {
-        parent.width = element.width
-        parent.height = element.height
-      }
-    })
-    const half = {
-      x: parent.width ? (parent.width * dZoom.value) / 100 / 2 : 0,
-      y: parent.height ? (parent.height * dZoom.value) / 100 / 2 : 0,
-    }
-    componentItem.forEach((element) => {
-      element.left += (lost ? lostX - half.x : e.layerX - half.x) * (100 / dZoom.value)
-      element.top += (lost ? lostY - half.y : e.layerY - half.y) * (100 / dZoom.value)
-    })
-    widgetStore.addGroup(componentItem)
-    // store.dispatch('addGroup', componentItem)
-    // addGroup(item)
-  }
+  // if (type === 'group') {
+  //   let parent: TParentData = {}
+  //   const componentItem = await getComponentsData(item)
+  //   // item = await getComponentsData(item)
+  //   componentItem.forEach((element) => {
+  //     if (element.type === 'w-group') {
+  //       parent.width = element.width
+  //       parent.height = element.height
+  //     }
+  //   })
+  //   const half = {
+  //     x: parent.width ? (parent.width * dZoom.value) / 100 / 2 : 0,
+  //     y: parent.height ? (parent.height * dZoom.value) / 100 / 2 : 0,
+  //   }
+  //   componentItem.forEach((element) => {
+  //     element.left += (lost ? lostX - half.x : e.layerX - half.x) * (100 / dZoom.value)
+  //     element.top += (lost ? lostY - half.y : e.layerY - half.y) * (100 / dZoom.value)
+  //   })
+  //   widgetStore.addGroup(componentItem)
+  //   // store.dispatch('addGroup', componentItem)
+  //   // addGroup(item)
+  // }
   // 设置坐标
   const half = {
     x: setting.width ? (setting.width * dZoom.value) / 100 / 2 : 0,
@@ -513,6 +516,19 @@ const undoable = computed(() => {
 const redoable = computed(() => {
   return !(dHistoryParams.value.stackPointer === dHistoryStack.value.changes.length - 1)
 })
+
+// 打开全局设置
+function openSetting(){
+  console.log(dPage.value);
+  
+  dActiveElement.value = dPage.value; // 设置打开当前的弹窗信息为页面数据
+  dActiveElement.value.showSetting = true; // 设置打开详情弹窗
+}
+
+//专业代制作
+function helpMake(){
+  useNotification('专业代制作')
+}
 </script>
 
 <style lang="less" scoped>
@@ -579,5 +595,10 @@ const redoable = computed(() => {
   width: 94%;
   padding: 15px 0;
   margin: -22% auto 0;
+}
+.helpMake{
+  background: linear-gradient(yellow, yellow);
+  color: yellowgreen;
+
 }
 </style>

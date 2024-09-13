@@ -28,7 +28,10 @@ const { dSelectWidgets, dActiveElement, activeMouseEvent, dWidgets } = storeToRe
 const { updateRect, updateSelect } = storeToRefs(forceStore)
 
 let _target: string | null = null
-
+type TProps = {
+  isH5?: boolean
+}
+const { isH5 } = defineProps<TProps>()
 watch(
   () => dActiveElement.value,
   async (val) => {
@@ -80,7 +83,7 @@ watch(
       controlStore.setShowMoveable(true)
       // store.commit('setShowMoveable', true)
       // 参考线设置
-      if (moveable.elementGuidelines && !moveable.elementGuidelines.includes(target)) {
+      if ((moveable.elementGuidelines && !moveable.elementGuidelines.includes(target)) || !isH5) {
         moveable.elementGuidelines.push(target)
       }
     } else {
@@ -166,7 +169,7 @@ watch(
   (items) => {
     console.log('dSelectWidgets', items);
     
-    if (!moveable) return
+    if (!moveable || isH5) return
     const alt = dAltDown.value
     // if (items.length > 1) {
     //   console.log('打开组合面板')
@@ -192,7 +195,7 @@ watch(
 watch(
   () => guidelines.value,
   (lines) => {
-    if (!moveable) return
+    if (!moveable || isH5) return
     console.log(lines)
     moveable.verticalGuidelines = lines.verticalGuidelines
     moveable.horizontalGuidelines = lines.horizontalGuidelines
