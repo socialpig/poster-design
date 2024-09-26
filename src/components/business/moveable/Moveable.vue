@@ -35,8 +35,6 @@ const { isH5 } = defineProps<TProps>()
 watch(
   () => dActiveElement.value,
   async (val) => {
-    console.log('dActiveElement-moveable---', val);
-    
     setTimeout(async () => {
       await nextTick()
       checkMouseEvent()
@@ -74,8 +72,6 @@ watch(
       }
       // // Set Move Auto
       moveable.setState({ target: _target }, () => {
-        console.log('选中了');
-        
         // 当出现mouseevent时进行即刻选中
         checkMouseEvent()
       })
@@ -103,10 +99,6 @@ watch(
 watch(
   () => showMoveable.value,
   (val) => {
-    console.log('showMoveable', val);
-    console.log('moveable', moveable);
-    
-    
     if (!moveable) return
     if (val) {
         moveable.target = _target
@@ -167,7 +159,6 @@ watch(
 watch(
   () => dSelectWidgets.value,
   (items) => {
-    console.log('dSelectWidgets', items);
     
     if (!moveable || isH5) return
     const alt = dAltDown.value
@@ -251,8 +242,6 @@ let resetRatio: number = 0
 let resizeTempData: { width: number, height: number } | null = null
 
 onMounted(() => {
-  console.log(6666);
-  
   let holdGroupPosition: Record<string, any> | null = null
   const moveableOptions: TMoveableOptions = {
     target: document.querySelector(`[id="empty"]`),
@@ -368,15 +357,9 @@ onMounted(() => {
     }
   })
   .on('keyUp', (e) => {
-    console.log(e);
-    console.log('keyUp ---- ');
-    
     moveable.updateRect()
   })
   .on('keyDown', (e) => {
-    console.log(e);
-    console.log('keydown ---- ');
-    
     moveable.updateRect()
   })
   .on('rotate', ({ target, beforeDist, dist, transform }: any) => {

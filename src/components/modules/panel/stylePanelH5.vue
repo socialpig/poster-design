@@ -80,13 +80,9 @@ const showGroupCombined = ref(false)
 let isShowStylePanel = ref(false)
 // const { dActiveElement, dWidgets, dSelectWidgets } = useSetupMapGetters(['dActiveElement', 'dWidgets', 'dSelectWidgets'])
 const { dActiveElement, dWidgets, dSelectWidgets } = storeToRefs(widgetStore)
-console.log('inPanel', dSelectWidgets.value);
-
 watch(
   dActiveElement,
   (items) => {
-    console.log('items====', items);
-    
     if(items && items.showSetting){
       isShowStylePanel.value = true;
       setTimeout(() => {

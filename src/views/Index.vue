@@ -189,8 +189,6 @@ onMounted(() => {
   fnMounted();
 })
 function fnMounted(){
-  
-  console.log("onMounted")
   groupStore.initGroupJson(JSON.stringify(wGroupSetting))
   // store.dispatch('initGroupJson', JSON.stringify(wGroupSetting))
   // initGroupJson(JSON.stringify(wGroup.setting))
@@ -223,11 +221,6 @@ function downloadCancel() {
 }
 
 function loadData() {
-  
-  console.log("optionsRef---")
-  console.log(optionsRef)
-  console.log(widgetStore)
-  
   // 初始化加载页面
   if (!optionsRef.value) return
   optionsRef.value.load(async () => {

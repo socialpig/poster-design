@@ -55,9 +55,10 @@
                 backgroundPositionY: (dPage.backgroundTransform?.y || 0) + 'px',
                 opacity: dPage.opacity + (dZoom < 100 ? dPage.tag : 0),
               }"
-              @mousemove="dropOver($event)"
+             
               @drop="drop($event)"
               @mouseup="drop($event)"
+              @touchstart="touchstart($event)"
             >
             <!-- @mousedown="mousedown($event)"
               @mousemove="mousemove($event)"
@@ -66,7 +67,7 @@
               @touchend="touchend($event)" -->
             <!-- <div v-for="layer in dLayouts[page_index].layers" ></div> -->
             <div v-for="layer in dLayouts[currentPage - 1].layers" >
-                <component v-if="layer.type !== 'w-audio'" :is="layer.type" :id="layer.uuid" :key="layer.uuid" :class="['layer', { 'layer-hover': layer.uuid === dHoverUuid || dActiveElement?.parent === layer.uuid, 'layer-no-hover': dActiveElement?.uuid === layer.uuid }, animationConfig(layer)]" :data-title="layer.type" :params="layer" :parent="dPage" :data-type="layer.type" :data-uuid="layer.uuid">
+                <component v-if="layer.type !== 'w-audio'" :is="layer.type" :id="layer.uuid" :key="layer.uuid" :class="[{'layer': dHoverUuid !== -1}, { 'layer-hover': layer.uuid === dHoverUuid || dActiveElement?.parent === layer.uuid, 'layer-no-hover': dActiveElement?.uuid === layer.uuid }, animationConfig(layer)]" :data-title="layer.type" :params="layer" :parent="dPage" :data-type="layer.type" :data-uuid="layer.uuid">
                   <template v-if="layer.isContainer">
                     <component :is="widget.type" v-for="widget in getChilds(layer.uuid)" :key="widget.uuid" child :class="['layer', { 'layer-no-hover': dActiveElement?.uuid !== widget.parent && dActiveElement?.parent !== widget.parent }]" :data-title="widget.type" :params="widget" :parent="layer" :data-type="widget.type" :data-uuid="widget.uuid" />
                   </template>
@@ -276,7 +277,6 @@ async function handleMouseMove(e: MouseEvent) {
 async function handleSelection(e: MouseEvent) {
   // 重置uuid为null,TODO --- 暂时注释
   // dActiveElement.value = null;
-  console.log('dActiveElement', dActiveElement.value);
   if (e.which === 3) {
     return
   }
@@ -286,10 +286,6 @@ async function handleSelection(e: MouseEvent) {
   let type = target.getAttribute('data-type')
   if (type) {
     let uuid = target.getAttribute('data-uuid')
-    console.log('dLayouts', dLayouts);
-    console.log('dWidgets', dWidgets.value);
-    console.log('dActiveElement', dActiveElement.value);
-    
     // 给当前点击的uuid赋值
     dHoverUuid.value = uuid
     // 切换当前页面数据（为当前页数据）
@@ -455,8 +451,6 @@ async function drop(e: MouseEvent) {
         const widget = dWidgets.value.find((item: { uuid: string }) => item.uuid == dropIn)
         if (!widget) return
         widget.imgUrl = item.value.url
-        console.log('加入+', widget)
-
         // store.commit('setShowMoveable', true) // 恢复选择
         controlStore.setShowMoveable(true) // 恢复选择
       } else {
@@ -485,17 +479,14 @@ async function save(hasCover: boolean = false) {
   //   return useNotification('保存失败', '可能是没有修改任何东西哦~', { type: 'error' })
   // }
   controlStore.setShowMoveable(false) // 清理掉上一次的选择框
-  // console.log(proxy?.dPage, proxy?.dWidgets)
   const { page_type } = dPage.value
   const { id } = route.query
   // const cover = hasCover ? await draw() : undefined
   // const widgets = dWidgets.value // reviseData()
   const data = widgetStore.dLayouts
-  console.log(data);
   data.map(item => {
     item.global.page_type =  page_type; // 接口不是我们的，公共参数没有接收这个参数，只能先放在这里
   })
-  console.log(dPage)
   // cover, 
   const { id: newId, stat, msg } = await api.home.saveTemp({ id: (id as string), title: dPage.value.title || '未命名设计', data: JSON.stringify(data), width: dPage.value.width, height: dPage.value.height, autoScroll: dPage.value.autoScroll, scrollSpeed: dPage.value.scrollSpeed, page_type: page_type || 'turnPage'  })
   stat !== 0 ? useNotification('保存成功', '可在"我的作品"中查看') : useNotification('保存失败', msg, { type: 'error' })
@@ -519,8 +510,6 @@ const redoable = computed(() => {
 
 // 打开全局设置
 function openSetting(){
-  console.log(dPage.value);
-  
   dActiveElement.value = dPage.value; // 设置打开当前的弹窗信息为页面数据
   dActiveElement.value.showSetting = true; // 设置打开详情弹窗
 }
@@ -529,6 +518,17 @@ function openSetting(){
 function helpMake(){
   useNotification('专业代制作')
 }
+// 迂回的规避一下手机端编辑时,moveable的可拖拽多选问题,暂时先手动处理
+function touchstart(e){
+  // 点击空白的地方
+ if(e.target.getAttribute('class') === 'design-canvas'){
+    dActiveElement.value = null; // 设置打开当前的弹窗信息为页面数据
+    dHoverUuid.value = -1; // layer-hover边框问题
+    controlStore.setShowMoveable(false); // 清空已选的选择框
+    e.stopPropagation();
+    e.preventDefault();
+  }
+}
 </script>
 
 <style lang="less" scoped>
@@ -536,7 +536,7 @@ function helpMake(){
   background-color: #f3f5f7;
 }
 #main {
-  overflow: auto;
+  overflow: hidden;
   position: relative;
 }
 #page-design {
@@ -545,6 +545,7 @@ function helpMake(){
   overflow: auto;
   position: relative;
   // width: 100%;
+  overflow: hidden; 
   .out-page {
     scrollbar-width: none;
     margin: 0 auto;
@@ -552,7 +553,7 @@ function helpMake(){
     position: relative;
     // height: calc(100vh - 25px);
     height: 100vh;
-    overflow-y: auto; 
+    overflow: hidden; 
     &::-webkit-scrollbar{
       display: none;
       width:10px;
@@ -565,6 +566,7 @@ function helpMake(){
       box-shadow: 1px 1px 10px 3px rgba(0, 0, 0, 0.1);
       margin: 0 auto;
       position: relative;
+      overflow: hidden;
     }
   }
 }

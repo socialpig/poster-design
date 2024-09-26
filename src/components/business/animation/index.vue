@@ -73,9 +73,6 @@
     // -- speed: 速度：slow, slower, fast, faster
     // -- isPreview： 是否预览，一次之后就停止,初始化设置的时候默认为true，发布作品时修改为false
     // transition.value = {
-      console.log(props);
-      console.log(props.params);
-      console.log(props.params.transition);
       
     props.params.transition = {
       animate: value,

@@ -152,6 +152,8 @@ function touchstart() {
 }
 
 function touchend() {
+  console.log('touchend');
+  
   if (dActiveElement.value?.uuid !== props.params.uuid) {
     return
   }

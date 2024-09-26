@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isShowStylePanel" class="bottomControl">
+  <div v-if="dActiveElement && dActiveElement.type !== 'page'" class="bottomControl">
     <!-- 控制组件区 -->
     <div class="section area">
       <style-panel-simple-area />
@@ -45,30 +45,9 @@ const groupStore = useGroupStore()
 const historyStore = useHistoryStore()
 const { dPage } = storeToRefs(useCanvasStore())
 
-const activeTab = ref(0)
 const iconList = ref<AlignListData[]>(alignIconList)
-const showGroupCombined = ref(false)
-let isShowStylePanel = ref(false)
 // const { dActiveElement, dWidgets, dSelectWidgets } = useSetupMapGetters(['dActiveElement', 'dWidgets', 'dSelectWidgets'])
 const { dActiveElement, dWidgets, dSelectWidgets } = storeToRefs(widgetStore)
-
-watch(
-  dSelectWidgets,
-  (items) => {
-    isShowStylePanel.value = true;
-    setTimeout(() => {
-      showGroupCombined.value = items.length > 1
-    }, 100)
-  },
-  {
-    deep: true
-  }
-)
-
-function handleCombine() {
-  groupStore.realCombined()
-  // store.dispatch('realCombined')
-}
 
 // ...mapActions(['selectWidget', 'updateAlign', 'updateHoverUuid', 'getCombined', 'realCombined', 'ungroup', 'pushHistory']),
 function alignAction(item: TIconItemSelectData) {
@@ -97,7 +76,6 @@ function openAnimationEdit(){
 }
 // 取消选中
 function cancel(){
-  console.log(dActiveElement.value);
   controlStore.setShowMoveable(false) // 清理上一次的选择
   dActiveElement.value = '';
 }
@@ -107,7 +85,6 @@ function deleteWidget(){
 }
 function setting(){
   dActiveElement.value.showSetting = true;
-  console.log(dActiveElement.value);
   
 }
 </script>

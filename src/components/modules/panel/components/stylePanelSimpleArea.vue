@@ -43,27 +43,13 @@ import { useWidgetStore } from '@/store';
 import { ElDatePicker,ElMessage ,ElUpload } from 'element-plus'
 import type { UploadProps } from 'element-plus'
 import { Plus } from '@element-plus/icons-vue'
-import { log } from 'console';
-import { display } from 'html2canvas/dist/types/css/property-descriptors/display'
 const widgetStore = useWidgetStore()
 const { dActiveElement, dWidgets, dSelectWidgets } = storeToRefs(widgetStore)
 let isShowChangeText = ref(false);
 const imageUrl = ref('')
 const uploadData = {folder: 'user'}
-watch(
-  dActiveElement,
-  (items) => {
-    console.log(items);
-    
-  },
-  {
-    deep: true
-  }
-)
 function fnChangeText(){
-  isShowChangeText.value = true;
-  console.log(isShowChangeText.value);
-  
+  isShowChangeText.value = true;  
 }
 function handleChildEvent(){
   isShowChangeText.value = false
@@ -72,7 +58,6 @@ const handleAvatarSuccess: UploadProps['onSuccess'] = (
   response,
   uploadFile
 ) => {
-  console.log(response);
   dActiveElement.value.imgUrl = response.result.url;
   imageUrl.value = URL.createObjectURL(uploadFile.raw!)
 }
