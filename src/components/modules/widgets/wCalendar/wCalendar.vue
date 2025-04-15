@@ -61,7 +61,7 @@ const state = reactive<TState>({
 })
 // const { dActiveElement } = useSetupMapGetters(['dActiveElement'])
 const { dActiveElement } = storeToRefs(widgetStore)
-const width = computed(() => Number(props.params.width))
+// const width = computed(() => Number(props.params.width))
 const widgetRef = ref<HTMLElement | null>(null)
 
 watch(

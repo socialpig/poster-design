@@ -82,7 +82,7 @@ const showLunar = (date) => {
 const route = useRoute()
 let isLoading = ref(false)
 let loadedFontList = ref([]); // 已加载好的字体
-const isDraw = computed(() => route.name === 'Draw' && fontWithDraw)
+// const isDraw = computed(() => route.name === 'Draw' && fontWithDraw)
 
 watch(
   () => props.params,

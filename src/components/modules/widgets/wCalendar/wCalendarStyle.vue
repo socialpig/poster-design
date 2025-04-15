@@ -118,7 +118,7 @@ const state = reactive<TState>({
   styleIconList2,
   alignIconList,
 })
-const dActiveElement = computed(() => widgetStore.dActiveElement)
+// const dActiveElement = computed(() => widgetStore.dActiveElement)
 // const dMoving = computed(() => store.getters.dMoving)
 const { dMoving } = storeToRefs(useControlStore())
 
